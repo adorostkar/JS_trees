@@ -1,0 +1,166 @@
+{
+    "Nodes": [
+        {
+            "lvl": 1,
+            "name": "Product 1"
+        },
+        {
+            "lvl": 1,
+            "name": "Product 2"
+        },
+        {
+            "lvl": 1,
+            "name": "Product 3"
+        },
+        {
+            "lvl": 1,
+            "name": "Product 4"
+        },
+        {
+            "lvl": 1,
+            "name": "Product 5"
+        },
+        {
+            "lvl": 0,
+            "name": "Industry 1"
+        },
+        {
+            "lvl": 0,
+            "name": "Industry 2"
+        },
+        {
+            "lvl": 0,
+            "name": "Industry 3"
+        },
+        {
+            "lvl": 0,
+            "name": "Industry 4"
+        },
+        {
+            "lvl": 0,
+            "name": "Industry 5"
+        },
+        {
+            "lvl": 2,
+            "name": "Size 1"
+        },
+        {
+            "lvl": 2,
+            "name": "Size 2"
+        },
+        {
+            "lvl": 2,
+            "name": "Size 3"
+        },
+        {
+            "lvl": 2,
+            "name": "Size 4"
+        },
+        {
+            "lvl": 2,
+            "name": "Size 5"
+        }
+    ],
+    "links": [
+        {
+            "source": "Industry 1",
+            "target": "Product 1"
+        },
+        {
+            "source": "Industry 3",
+            "target": "Product 1"
+        },
+        {
+            "source": "Industry 5",
+            "target": "Product 1"
+        },
+        {
+            "source": "Industry 2",
+            "target": "Product 2"
+        },
+        {
+            "source": "Industry 4",
+            "target": "Product 2"
+        },
+        {
+            "source": "Industry 1",
+            "target": "Product 3"
+        },
+        {
+            "source": "Industry 3",
+            "target": "Product 3"
+        },
+        {
+            "source": "Industry 5",
+            "target": "Product 3"
+        },
+        {
+            "source": "Industry 2",
+            "target": "Product 4"
+        },
+        {
+            "source": "Industry 4",
+            "target": "Product 4"
+        },
+        {
+            "source": "Industry 1",
+            "target": "Product 5"
+        },
+        {
+            "source": "Industry 3",
+            "target": "Product 5"
+        },
+        {
+            "source": "Industry 5",
+            "target": "Product 5"
+        },
+        {
+            "source": "Product 1",
+            "target": "Size 2"
+        },
+        {
+            "source": "Product 1",
+            "target": "Size 4"
+        },
+        {
+            "source": "Product 2",
+            "target": "Size 1"
+        },
+        {
+            "source": "Product 2",
+            "target": "Size 3"
+        },
+        {
+            "source": "Size 5",
+            "target": "Product 2"
+        },
+        {
+            "source": "Product 3",
+            "target": "Size 2"
+        },
+        {
+            "source": "Product 3",
+            "target": "Size 4"
+        },
+        {
+            "source": "Product 4",
+            "target": "Size 1"
+        },
+        {
+            "source": "Product 4",
+            "target": "Size 3"
+        },
+        {
+            "source": "Product 4",
+            "target": "Size 5"
+        },
+        {
+            "source": "Product 5",
+            "target": "Size 2"
+        },
+        {
+            "source": "Product 5",
+            "target": "Size 4"
+        }
+    ]
+}
