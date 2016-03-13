@@ -1,9 +1,9 @@
-var width = 800,
+var width = 1100,
     height = 800,
     boxWidth = 150,
     boxHeight = 20,
     gap = {
-        width: 150,
+        width: 70,
         height: 12
     },
     margin = {
@@ -19,8 +19,6 @@ var width = 800,
 var Nodes = [];
 var links = [];
 var lvlCount = 0;
-
-// E N D   O F   M A I N   C O D E
 
 var diagonal = d3.svg.diagonal()
     .projection(function (d) {
@@ -39,40 +37,53 @@ function find(text) {
     return null;
 }
 
-function mouse_action(val, stat, original) {
+function mouse_action(val, stat, direction) {
     "use strict";
     d3.select("#" + val.id).classed("active", stat);
-    if (original) {
-        links.forEach(function (d) {
-            if (d.source.id !== val.id && d.target.id !== val.id) {
-                if (d.target.lvl === val.lvl || d.source.lvl === val.lvl) {
-                    d.visited = true;
+    
+    links.forEach(function (d) {
+        if (direction == "root") {
+            if (d.source.id === val.id) {
+                d3.select("#" + d.id).classed("activelink", stat); // change link color
+                d3.select("#" + d.id).classed("link", !stat); // change link color
+                if (d.target.lvl < val.lvl)
+                    mouse_action(d.target, stat, "left");
+                else if (d.target.lvl > val.lvl)
+                    mouse_action(d.target, stat, "right");
+            }
+            if (d.target.id === val.id) {
+                d3.select("#" + d.id).classed("activelink", stat); // change link color
+                d3.select("#" + d.id).classed("link", !stat); // change link color
+                if (direction == "root") {
+                    if(d.source.lvl < val.lvl)
+                        mouse_action(d.source, stat, "left");
+                    else if (d.source.lvl > val.lvl)
+                        mouse_action(d.source, stat, "right");
                 }
             }
-        });
-    }
-    links.forEach(function (d) {
-        if (d.source.id === val.id && !d.visited) {
-            d.visited = true;
-            d3.select("#" + d.id).classed("activelink", stat); // change link color
-            d3.select("#" + d.id).classed("link", !stat); // change link color
-//            d3.select("#" + d.target.id).classed("active", stat); // change node color
-            mouse_action(d.target, stat, false);
+        }else if (direction == "left") {
+            if (d.source.id === val.id && d.target.lvl < val.lvl) {
+                d3.select("#" + d.id).classed("activelink", stat); // change link color
+                d3.select("#" + d.id).classed("link", !stat); // change link color
+                mouse_action(d.target, stat, direction);
+            }
+            if (d.target.id === val.id && d.source.lvl < val.lvl) {
+                d3.select("#" + d.id).classed("activelink", stat); // change link color
+                d3.select("#" + d.id).classed("link", !stat); // change link color
+                mouse_action(d.source, stat, direction);
+            }
+        }else if (direction == "right") {
+            if (d.source.id === val.id && d.target.lvl > val.lvl) {
+                d3.select("#" + d.id).classed("activelink", stat); // change link color
+                d3.select("#" + d.id).classed("link", !stat); // change link color
+                mouse_action(d.target, stat, direction);
+            }
+            if (d.target.id === val.id && d.source.lvl > val.lvl) {
+                d3.select("#" + d.id).classed("activelink", stat); // change link color
+                d3.select("#" + d.id).classed("link", !stat); // change link color
+                mouse_action(d.source, stat, direction);
+            }
         }
-        if (d.target.id === val.id && !d.visited) {
-            d.visited = true;
-            d3.select("#" + d.id).classed("activelink", stat); // change link color
-            d3.select("#" + d.id).classed("link", !stat); // change link color
-//            d3.select("#" + d.source.id).classed("active", stat); // change node color
-            mouse_action(d.source, stat, false);
-        }
-    });
-}
-
-function unvisite_links() {
-    "use strict";
-    links.forEach(function (d) {
-        d.visited = false;
     });
 }
 
@@ -100,7 +111,6 @@ function renderRelationshipGraph(data) {
             id: "l" + find(d.source).id + find(d.target).id
         });
     });
-    unvisite_links();
 
     svg.append("g")
         .attr("class", "nodes");
@@ -122,19 +132,17 @@ function renderRelationshipGraph(data) {
         .attr("rx", 6)
         .attr("ry", 6)
         .on("mouseover", function () {
-            mouse_action(d3.select(this).datum(), true, true);
-            unvisite_links();
+            mouse_action(d3.select(this).datum(), true, "root");
         })
         .on("mouseout", function () {
-            mouse_action(d3.select(this).datum(), false, true);
-            unvisite_links();
+            mouse_action(d3.select(this).datum(), false, "root");
         });
 
     node.append("text")
         .attr("class", "label")
         .attr("x", function (d) { return d.x + 14; })
         .attr("y", function (d) { return d.y + 15; })
-        .text(function (d) { return d.name; });
+        .text(function (d) { return d.text; });
 
     links.forEach(function (li) {
         svg.append("path", "g")
