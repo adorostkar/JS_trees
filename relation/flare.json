@@ -169,10 +169,6 @@
     "links": [
         {
             "source":"c:pp",
-            "target":"pp"
-        },
-        {
-            "source":"c:pp",
             "target":"parallel"
         },
         {

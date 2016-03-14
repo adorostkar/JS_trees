@@ -73,52 +73,28 @@ function mouse_action(val, stat, direction) {
     d3.select("#" + val.id).classed("active", stat);
 
     links.forEach(function (d) {
-        if (direction == "root") {
-            if (d.source.id === val.id) {
-                switch_state(d, stat);
-//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
-//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
-                if (d.target.lvl < val.lvl)
-                    mouse_action(d.target, stat, "left");
-                else if (d.target.lvl > val.lvl)
-                    mouse_action(d.target, stat, "right");
-            }
-            if (d.target.id === val.id) {
-                switch_state(d, stat);
-//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
-//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
-                if (direction == "root") {
-                    if(d.source.lvl < val.lvl)
-                        mouse_action(d.source, stat, "left");
-                    else if (d.source.lvl > val.lvl)
-                        mouse_action(d.source, stat, "right");
+        // This is used to reduce the amount of repetition in the code. 
+        // For previous implementation see git log.
+        var st = [d.source, d.target];
+        for (var i = 0; i < 2; i++){
+            if (direction == "root") {
+                if (st[i].id === val.id) {
+                    switch_state(d, stat);
+                    if (st[(i+1)%2].lvl < val.lvl)
+                        mouse_action(st[(i+1)%2], stat, "left");
+                    else if (st[(i+1)%2].lvl > val.lvl)
+                        mouse_action(st[(i+1)%2], stat, "right");
                 }
-            }
-        }else if (direction == "left") {
-            if (d.source.id === val.id && d.target.lvl < val.lvl) {
-                switch_state(d, stat);
-//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
-//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
-                mouse_action(d.target, stat, direction);
-            }
-            if (d.target.id === val.id && d.source.lvl < val.lvl) {
-                switch_state(d, stat);
-//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
-//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
-                mouse_action(d.source, stat, direction);
-            }
-        }else if (direction == "right") {
-            if (d.source.id === val.id && d.target.lvl > val.lvl) {
-                switch_state(d, stat);
-//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
-//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
-                mouse_action(d.target, stat, direction);
-            }
-            if (d.target.id === val.id && d.source.lvl > val.lvl) {
-                switch_state(d, stat);
-//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
-//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
-                mouse_action(d.source, stat, direction);
+            }else if (direction == "left") {
+                if (st[i].id === val.id && st[(i+1)%2].lvl < val.lvl) {
+                    switch_state(d, stat);
+                    mouse_action(st[(i+1)%2], stat, direction);
+                }
+            }else if (direction == "right") {
+                if (st[i].id === val.id && st[(i+1)%2].lvl > val.lvl) {
+                    switch_state(d, stat);
+                    mouse_action(st[(i+1)%2], stat, direction);
+                }
             }
         }
     });
