@@ -154,9 +154,35 @@
             "lvl": 4,
             "name": "icemodel",
             "text": "Ice Modeling"
+        },
+        {
+            "lvl": 4,
+            "name": "hpc",
+            "text": "HPC"
+        },
+        {
+            "lvl": 4,
+            "name": "c:pp",
+            "text": "Parallel Programming"
         }
     ],
     "links": [
+        {
+            "source":"c:pp",
+            "target":"pp"
+        },
+        {
+            "source":"c:pp",
+            "target":"parallel"
+        },
+        {
+            "source":"c:pp",
+            "target":"serial"
+        },
+        {
+            "source": "hpc",
+            "target": "serial"
+        },
         {
             "source": "icemodel",
             "target": "pde"

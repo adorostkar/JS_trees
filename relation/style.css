@@ -157,6 +157,7 @@ rect {
     fill: white;
     font-family: sans-serif;
     pointer-events: none;
+    font-size: 12px;
 }
 .link {
     fill: none;

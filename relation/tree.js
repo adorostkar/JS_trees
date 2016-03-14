@@ -1,10 +1,10 @@
-var width = 1100,
+var width = 1200,
     height = 600,
-    boxWidth = 150,
+    boxWidth = 170,
     boxHeight = 20,
     gap = {
         width: 70,
-        height: 12
+        height: 6
     },
     margin = {
         top: 16,
@@ -25,7 +25,7 @@ var numLvls = 0,
 var diagonal = d3.svg.diagonal()
     .projection(function (d) {
         "use strict";
-        return [d.x, d.y];
+        return [d.y, d.x];
     });
 
 function find(text) {
@@ -39,23 +39,54 @@ function find(text) {
     return null;
 }
 
+// Bring the current selection to the front of drawing.
+// This is neccessary when there are to many links 
+// and the highlighted link is behind all of them.
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function(){
+    this.parentNode.appendChild(this);
+  });
+};
+
+// Reverse function to moveToFront
+d3.selection.prototype.moveToBack = function() { 
+    return this.each(function() { 
+        var firstChild = this.parentNode.firstChild; 
+        if (firstChild) { 
+            this.parentNode.insertBefore(this, firstChild); 
+        } 
+    }); 
+};
+
+function switch_state (d, stat) {
+    if (stat){
+        d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
+        d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
+    }else{
+        d3.select("#" + d.id).moveToBack().classed("activelink", stat); // change link color
+        d3.select("#" + d.id).moveToBack().classed("link", !stat); // change link color
+    }
+}
+
 function mouse_action(val, stat, direction) {
     "use strict";
     d3.select("#" + val.id).classed("active", stat);
-    
+
     links.forEach(function (d) {
         if (direction == "root") {
             if (d.source.id === val.id) {
-                d3.select("#" + d.id).classed("activelink", stat); // change link color
-                d3.select("#" + d.id).classed("link", !stat); // change link color
+                switch_state(d, stat);
+//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
+//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
                 if (d.target.lvl < val.lvl)
                     mouse_action(d.target, stat, "left");
                 else if (d.target.lvl > val.lvl)
                     mouse_action(d.target, stat, "right");
             }
             if (d.target.id === val.id) {
-                d3.select("#" + d.id).classed("activelink", stat); // change link color
-                d3.select("#" + d.id).classed("link", !stat); // change link color
+                switch_state(d, stat);
+//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
+//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
                 if (direction == "root") {
                     if(d.source.lvl < val.lvl)
                         mouse_action(d.source, stat, "left");
@@ -65,24 +96,28 @@ function mouse_action(val, stat, direction) {
             }
         }else if (direction == "left") {
             if (d.source.id === val.id && d.target.lvl < val.lvl) {
-                d3.select("#" + d.id).classed("activelink", stat); // change link color
-                d3.select("#" + d.id).classed("link", !stat); // change link color
+                switch_state(d, stat);
+//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
+//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
                 mouse_action(d.target, stat, direction);
             }
             if (d.target.id === val.id && d.source.lvl < val.lvl) {
-                d3.select("#" + d.id).classed("activelink", stat); // change link color
-                d3.select("#" + d.id).classed("link", !stat); // change link color
+                switch_state(d, stat);
+//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
+//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
                 mouse_action(d.source, stat, direction);
             }
         }else if (direction == "right") {
             if (d.source.id === val.id && d.target.lvl > val.lvl) {
-                d3.select("#" + d.id).classed("activelink", stat); // change link color
-                d3.select("#" + d.id).classed("link", !stat); // change link color
+                switch_state(d, stat);
+//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
+//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
                 mouse_action(d.target, stat, direction);
             }
             if (d.target.id === val.id && d.source.lvl > val.lvl) {
-                d3.select("#" + d.id).classed("activelink", stat); // change link color
-                d3.select("#" + d.id).classed("link", !stat); // change link color
+                switch_state(d, stat);
+//                d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
+//                d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
                 mouse_action(d.source, stat, direction);
             }
         }
@@ -146,18 +181,18 @@ function renderRelationshipGraph(data) {
             .attr("id", li.id)
             .attr("d", function () {
                 var oTarget = {
-                    x: li.target.x,
-                    y: li.target.y + 0.5 * boxHeight
+                    x: li.target.y + 0.5 * boxHeight,
+                    y: li.target.x
                 };
                 var oSource = {
-                    x: li.source.x,
-                    y: li.source.y + 0.5 * boxHeight
+                    x: li.source.y + 0.5 * boxHeight,
+                    y: li.source.x
                 };
                 
-                if (oSource.x < oTarget.x) {
-                    oSource.x += boxWidth;
+                if (oSource.y < oTarget.y) {
+                    oSource.y += boxWidth;
                 } else {
-                    oTarget.x += boxWidth;
+                    oTarget.y += boxWidth;
                 }
                 return diagonal({
                     source: oSource,
