@@ -150,7 +150,7 @@ rect {
 .activelink {
     fill: none;
     stroke: orange;
-    stroke-width: 1.5px;
+    stroke-width: 2.5px;
 }
 
 .label {

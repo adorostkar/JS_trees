@@ -1,5 +1,5 @@
 var width = 1100,
-    height = 800,
+    height = 600,
     boxWidth = 150,
     boxHeight = 20,
     gap = {
@@ -18,7 +18,9 @@ var width = 1100,
 // test layout
 var Nodes = [];
 var links = [];
-var lvlCount = 0;
+var numLvls = 0,
+    marginLvls = [],
+    count = [];
 
 var diagonal = d3.svg.diagonal()
     .projection(function (d) {
@@ -89,16 +91,10 @@ function mouse_action(val, stat, direction) {
 
 function renderRelationshipGraph(data) {
     "use strict";
-    var count = [];
-
-    data.Nodes.forEach(function (d) {
-        count[d.lvl] = 0;
-    });
-    lvlCount = count.length;
 
     data.Nodes.forEach(function (d, i) {
         d.x = margin.left + d.lvl * (boxWidth + gap.width);
-        d.y = margin.top + (boxHeight + gap.height) * count[d.lvl];
+        d.y = marginLvls[d.lvl] + (boxHeight + gap.height) * count[d.lvl];
         d.id = "n" + i;
         count[d.lvl] += 1;
         Nodes.push(d);
@@ -171,13 +167,30 @@ function renderRelationshipGraph(data) {
     });
 }
 
-svg = d3.select("#tree").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g");
+// M A I N   C O D E
 
 d3.json("flare.json", function (json) {
     "use strict";
     data = json;
+    
+    svg = d3.select("#tree").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g");
+    
+    data.Nodes.forEach(function (d) {
+        count[d.lvl] = 0;
+        marginLvls[d.lvl] = 0;
+    });
+    numLvls = count.length;
+    
+    data.Nodes.forEach(function (d) {
+        marginLvls[d.lvl] += 1;
+    });
+    
+    for (var i = 0; i < marginLvls.length; i++){
+        marginLvls[i] = (height - marginLvls[i]*boxHeight - (marginLvls[i]-1)*gap.height)/2;
+    }
+    
     renderRelationshipGraph(data);
 });
