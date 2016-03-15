@@ -1,6 +1,4 @@
-var width = 1200,
-    height = 600,
-    boxWidth = 170,
+var boxWidth = 170,
     boxHeight = 20,
     gap = {
         width: 70,
@@ -12,14 +10,16 @@ var width = 1200,
         bottom: 16,
         left: 16
     },
-    data,
-    svg;
+    data,   // set after main code comment
+    svg,    // set after main code comment
+    width,  // set after main code comment
+    height; // set after main code comment
 
 // test layout
 var Nodes = [];
 var links = [];
 var numLvls = 0,
-    marginLvls = [],
+    topMarginLvl = [],
     count = [];
 
 var diagonal = d3.svg.diagonal()
@@ -105,7 +105,7 @@ function renderRelationshipGraph(data) {
 
     data.Nodes.forEach(function (d, i) {
         d.x = margin.left + d.lvl * (boxWidth + gap.width);
-        d.y = marginLvls[d.lvl] + (boxHeight + gap.height) * count[d.lvl];
+        d.y = topMarginLvl[d.lvl] + (boxHeight + gap.height) * count[d.lvl];
         d.id = "n" + i;
         count[d.lvl] += 1;
         Nodes.push(d);
@@ -143,7 +143,8 @@ function renderRelationshipGraph(data) {
         })
         .on("mouseout", function () {
             mouse_action(d3.select(this).datum(), false, "root");
-        });
+        })
+        .on("click", function(d) { if(d.url) window.open(d.url); }); // If a url is available, put a click event
 
     node.append("text")
         .attr("class", "label")
@@ -184,24 +185,31 @@ d3.json("flare.json", function (json) {
     "use strict";
     data = json;
     
-    svg = d3.select("#tree").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g");
-    
     data.Nodes.forEach(function (d) {
         count[d.lvl] = 0;
-        marginLvls[d.lvl] = 0;
+        topMarginLvl[d.lvl] = 0;
     });
     numLvls = count.length;
     
     data.Nodes.forEach(function (d) {
-        marginLvls[d.lvl] += 1;
+        topMarginLvl[d.lvl] += 1;
     });
     
-    for (var i = 0; i < marginLvls.length; i++){
-        marginLvls[i] = (height - marginLvls[i]*boxHeight - (marginLvls[i]-1)*gap.height)/2;
+    var largest = Math.max.apply(Math, topMarginLvl);
+    
+    // Update height and width to have all the nodes in the image and also have 
+    // the smallest image possible.
+    height = margin.top + margin.bottom + largest*boxHeight + (largest - 1) * gap.height;
+    width  = margin.left + margin.right + topMarginLvl.length*boxWidth + (topMarginLvl.length - 1)*gap.width;
+    
+    for (var i = 0; i < topMarginLvl.length; i++){
+        topMarginLvl[i] = (height - topMarginLvl[i]*boxHeight - (topMarginLvl[i]-1)*gap.height)/2;
     }
+    
+    svg = d3.select("#tree").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g");
     
     renderRelationshipGraph(data);
 });

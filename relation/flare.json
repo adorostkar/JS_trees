@@ -152,48 +152,204 @@
         },
         {
             "lvl": 4,
-            "name": "icemodel",
-            "text": "Ice Modeling"
+            "name": "c:scicomp1",
+            "text": "Scientific computing I"
         },
         {
             "lvl": 4,
-            "name": "hpc",
+            "name": "c:scicomp2",
+            "text": "Scientific computing II"
+        },
+        {
+            "lvl": 4,
+            "name": "c:scicomp3",
+            "text": "Scientific computing III"
+        },
+        {
+            "lvl": 4,
+            "name": "c:nff",
+            "text": "Num. methods for finance"
+        },
+        {
+            "lvl": 4,
+            "name": "c:nla",
+            "text": "NLA (Graduate Course)"
+        },
+        {
+            "lvl": 4,
+            "name": "c:rbf",
+            "text": "RBF"
+        },
+        {
+            "lvl": 4,
+            "name": "c:optim",
+            "text": "Optimization"
+        },
+        {
+            "lvl": 4,
+            "name": "c:hpc",
             "text": "HPC"
         },
         {
             "lvl": 4,
             "name": "c:pp",
-            "text": "Parallel Programming"
+            "text": "Parallel Programming",
+            "url":"https://studentportalen.uu.se/portal/portal/uusp/student/student-course?uusp.portalpage=true&toolMode=studentUse&entityId=129250&uusp-locale=en"
+        },
+        {
+            "lvl": 4,
+            "name": "c:pdc",
+            "text": "Parallel and dist. comp."
         }
     ],
     "links": [
+        {
+            "source":"c:nff",
+            "target":"pde"
+        },
+        {
+            "source":"c:nff",
+            "target":"ode"
+        },
+        {
+            "source":"c:nff",
+            "target":"meshbased"
+        },
+        {
+            "source":"c:nff",
+            "target":"meshless"
+        },
+        {
+            "source":"c:nff",
+            "target":"lp"
+        },
+        {
+            "source":"c:pdc",
+            "target":"parallel"
+        },
+        {
+            "source":"c:optim",
+            "target":"optimization"
+        },
+        {
+            "source":"c:optim",
+            "target":"lp"
+        },
+        {
+            "source":"c:rbf",
+            "target":"meshless"
+        },
+        {
+            "source":"c:rbf",
+            "target":"lp"
+        },
+        {
+            "source":"c:rbf",
+            "target":"serial"
+        },
+        {
+            "source":"c:rbf",
+            "target":"parallel"
+        },
+        {
+            "source":"c:nla",
+            "target":"pde"
+        },
+        {
+            "source":"c:nla",
+            "target":"ode"
+        },
+        {
+            "source":"c:nla",
+            "target":"optimization"
+        },
+        {
+            "source":"c:nla",
+            "target":"meshbased"
+        },
+        {
+            "source":"c:nla",
+            "target":"tb"
+        },
+        {
+            "source":"c:nla",
+            "target":"serial"
+        },
+        {
+            "source":"c:nla",
+            "target":"parallel"
+        },
+        {
+            "source":"c:scicomp3",
+            "target":"optimization"
+        },
+        {
+            "source":"c:scicomp3",
+            "target":"ode"
+        },
+        {
+            "source":"c:scicomp3",
+            "target":"meshbased"
+        },
+        {
+            "source":"c:scicomp3",
+            "target":"lp"
+        },
+        {
+            "source":"c:scicomp3",
+            "target":"serial"
+        },
+        {
+            "source":"c:scicomp3",
+            "target":"parallel"
+        },
+        {
+            "source":"c:scicomp2",
+            "target":"ode"
+        },
+        {
+            "source":"c:scicomp2",
+            "target":"stochastic"
+        },
+        {
+            "source":"c:scicomp2",
+            "target":"meshbased"
+        },
+        {
+            "source":"c:scicomp2",
+            "target":"np"
+        },
+        {
+            "source":"c:scicomp2",
+            "target":"lp"
+        },
+        {
+            "source":"c:scicomp1",
+            "target":"lp"
+        },
+        {
+            "source":"c:scicomp1",
+            "target":"np"
+        },
+        {
+            "source":"c:scicomp1",
+            "target":"ie"
+        },
+        {
+            "source":"c:scicomp1",
+            "target":"pde"
+        },
+        {
+            "source":"c:scicomp1",
+            "target":"ode"
+        },
         {
             "source":"c:pp",
             "target":"parallel"
         },
         {
-            "source":"c:pp",
-            "target":"serial"
-        },
-        {
-            "source": "hpc",
+            "source": "c:hpc",
             "target": "serial"
-        },
-        {
-            "source": "icemodel",
-            "target": "pde"
-        },
-        {
-            "source": "icemodel",
-            "target": "ode"
-        },
-        {
-            "source": "icemodel",
-            "target": "serial"
-        },
-        {
-            "source": "icemodel",
-            "target": "ie"
         },
         {
             "source": "road",

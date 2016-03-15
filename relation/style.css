@@ -139,17 +139,17 @@ html{
 }
 
 rect {
-    fill: #CCC;
+    fill: #AAA;/* #CCC light gray, #BBB mid gray, #AAA dark gray*/
     cursor: pointer;
 }
 .active {
-    fill: orange;
-    stroke: orange;
+    fill: #990000; /* #990000 UU red , orange*/
+    stroke: #990000;
 }
 
 .activelink {
     fill: none;
-    stroke: orange;
+    stroke: #990000;
     stroke-width: 2.5px;
 }
 
@@ -161,6 +161,6 @@ rect {
 }
 .link {
     fill: none;
-    stroke: #ccc;
+    stroke: #AAA; /* #CCC light gray, #BBB mid gray, #AAA dark gray*/
     stroke-width: 1.5px;
 }
