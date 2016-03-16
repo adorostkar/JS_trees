@@ -158,7 +158,8 @@
         {
             "lvl": 4,
             "name": "c:scicomp2",
-            "text": "Scientific computing II"
+            "text": "Scientific computing II",
+            "url":"https://goo.gl/NMdDTY"
         },
         {
             "lvl": 4,
@@ -194,7 +195,7 @@
             "lvl": 4,
             "name": "c:pp",
             "text": "Parallel Programming",
-            "url":"https://studentportalen.uu.se/portal/portal/uusp/student/student-course?uusp.portalpage=true&toolMode=studentUse&entityId=129250&uusp-locale=en"
+            "url":"https://goo.gl/pfZNDG"
         },
         {
             "lvl": 4,

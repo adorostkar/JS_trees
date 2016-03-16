@@ -71,6 +71,8 @@ function switch_state (d, stat) {
 function mouse_action(val, stat, direction) {
     "use strict";
     d3.select("#" + val.id).classed("active", stat);
+    if(val.url)
+        d3.select("#" + val.id).classed("witurl", !stat);
 
     links.forEach(function (d) {
         // This is used to reduce the amount of repetition in the code. 
@@ -99,6 +101,14 @@ function mouse_action(val, stat, direction) {
         }
     });
 }
+
+var tip = d3.tip()
+    .attr('class', 'd3-tip')
+//    .direction('e')
+    .offset([-10, 0])
+    .html(function(d) {
+    return "Click to open website";
+})
 
 function renderRelationshipGraph(data) {
     "use strict";
@@ -135,14 +145,18 @@ function renderRelationshipGraph(data) {
         .attr("id", function (d) { return d.id; })
         .attr("width", boxWidth)
         .attr("height", boxHeight)
-        .attr("class", "node")
+        .attr("class", function (d) { return d.url? "node witurl":"node";})
         .attr("rx", 6)
         .attr("ry", 6)
         .on("mouseover", function () {
-            mouse_action(d3.select(this).datum(), true, "root");
+            var d = d3.select(this).datum();
+            mouse_action(d, true, "root");
+            if(d.url) tip.show(d)
         })
         .on("mouseout", function () {
-            mouse_action(d3.select(this).datum(), false, "root");
+            var d = d3.select(this).datum();
+            mouse_action(d, false, "root");
+            if(d.url) tip.hide(d)
         })
         .on("click", function(d) { if(d.url) window.open(d.url); }); // If a url is available, put a click event
 
@@ -207,9 +221,11 @@ d3.json("flare.json", function (json) {
     }
     
     svg = d3.select("#tree").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g");
+                .attr("width", width)
+                .attr("height", height)
+                .append("g");
+    
+    svg.call(tip);
     
     renderRelationshipGraph(data);
 });
