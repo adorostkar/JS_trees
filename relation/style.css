@@ -176,6 +176,7 @@ rect {
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
     border-radius: 2px;
+    text-align: center;
 }
 
 /* Creates a small triangle extender for the tooltip */
@@ -196,4 +197,5 @@ rect {
     margin: -1px 0 0 0;
     top: 100%;
     left: 0;
+    text-align: center;
 }

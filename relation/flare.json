@@ -189,13 +189,15 @@
         {
             "lvl": 4,
             "name": "c:hpc",
-            "text": "HPC"
+            "text": "HPC",
+            "dsc": "This course is very interesting<br/> with long description"
         },
         {
             "lvl": 4,
             "name": "c:pp",
             "text": "Parallel Programming",
-            "url":"https://goo.gl/pfZNDG"
+            "url":"https://goo.gl/pfZNDG",
+            "dsc": "This course is very interesting"
         },
         {
             "lvl": 4,

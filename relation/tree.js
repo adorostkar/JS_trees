@@ -107,8 +107,17 @@ var tip = d3.tip()
 //    .direction('e')
     .offset([-10, 0])
     .html(function(d) {
-    return "Click to open website";
-})
+        var str = "";
+        if (d.url && d.dsc){
+            str = "<font color=\"red\">Click to open website</font><br/><br/>";
+            str += d.dsc;
+        }else if(d.url)
+            str = "<font color=\"red\">Click to open website</font>";
+        else
+            str = d.dsc;
+            
+        return str;
+    })
 
 function renderRelationshipGraph(data) {
     "use strict";
@@ -151,12 +160,12 @@ function renderRelationshipGraph(data) {
         .on("mouseover", function () {
             var d = d3.select(this).datum();
             mouse_action(d, true, "root");
-            if(d.url) tip.show(d)
+            if(d.url || d.dsc) tip.show(d)
         })
         .on("mouseout", function () {
             var d = d3.select(this).datum();
             mouse_action(d, false, "root");
-            if(d.url) tip.hide(d)
+            if(d.url || d.dsc) tip.hide(d)
         })
         .on("click", function(d) { if(d.url) window.open(d.url); }); // If a url is available, put a click event
 
