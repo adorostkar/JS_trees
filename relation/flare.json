@@ -3,7 +3,7 @@
         {
             "lvl": 0,
             "name": "road",
-            "text": "Roadmap"
+            "text": "Scientific Computing"
         },
         {
             "lvl": 1,
@@ -202,7 +202,7 @@
         {
             "lvl": 4,
             "name": "c:pdc",
-            "text": "Parallel and dist. comp."
+            "text": "Parallel and distributed computing"
         }
     ],
     "links": [
