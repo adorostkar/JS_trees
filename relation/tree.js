@@ -10,10 +10,10 @@ var minBoxWidth = 170,
         bottom: 16,
         left: 16
     },
-    data,   // set after main code comment
-    svg,    // set after main code comment
-    width,  // set after main code comment
-    height; // set after main code comment
+    data,   // is set in the main code
+    svg,    // is set in the main code
+    width,  // is set in the main code
+    height; // is set in the main code
 
 // test layout
 var Nodes = [];
@@ -46,11 +46,10 @@ var tip = d3.tip()
     })
 
 // Find the node with the specified text as it name
-function find(text) {
+function find(nodeName) {
     "use strict";
-    var i;
-    for (i = 0; i < Nodes.length; i += 1) {
-        if (Nodes[i].name === text) {
+    for (var i = 0; i < Nodes.length; i += 1) {
+        if (Nodes[i].name === nodeName) {
             return Nodes[i];
         }
     }
@@ -66,7 +65,7 @@ d3.selection.prototype.moveToFront = function() {
   });
 };
 
-// Reverse function to moveToFront
+// Opposite action to the function moveToFront
 d3.selection.prototype.moveToBack = function() { 
     return this.each(function() { 
         var firstChild = this.parentNode.firstChild; 
@@ -76,7 +75,17 @@ d3.selection.prototype.moveToBack = function() {
     }); 
 };
 
+String.prototype.pad = function(padChar, padNum){
+    var filler = "";
+    for( var i = 0; i < padNum; i++){
+        filler += padChar;
+    }
+    return (filler + this).slice(-padNum);
+}
+
 function switch_state (d, stat) {
+    // T H E   D I F F E R E N C E
+    // is that if you uncomment, the links move to the back
 //    if (stat){
         d3.select("#" + d.id).moveToFront().classed("activelink", stat); // change link color
         d3.select("#" + d.id).moveToFront().classed("link", !stat); // change link color
@@ -86,36 +95,57 @@ function switch_state (d, stat) {
 //    }
 }
 
-function mouse_action(val, stat, direction) {
+// This function computes the size of the box needed to fit the node text.
+window.getWidthOfText = function(txt){
+  var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+    for (var x = 0; x < classes.length; x++) {
+        if (classes[x].selectorText === ".label") {
+            // Create dummy span
+            this.e = document.createElement('span');
+            // Set font-size
+            this.e.className = "label";
+            // Set text
+            this.e.innerHTML = txt;
+            document.body.appendChild(this.e);
+            // Get width NOW, since the dummy span is about to be removed from the document
+            var w = this.e.offsetWidth + 20;
+            // Cleanup
+            document.body.removeChild(this.e);
+            // All right, we're done
+            return w;
+        }
+    }
+}
+
+// Val is the node we want to look at and change the highlight status of its connectiosn
+// stat is the state that we want the connections to be. Either true for "on" or false for "off"
+// direction --> 0 = root, we continue probing both ways
+//               1 = only prob to the right
+//              -1 = only prob to the left
+function prob_the_tree(me, stat, direction) {
     "use strict";
-    d3.select("#" + val.id).classed("active", stat);
+    d3.select("#" + me.id).classed("active", stat);
 //    if(val.url)
 //        d3.select("#" + val.id).classed("witurl", !stat);
 
     links.forEach(function (d) {
-        // This is used to reduce the amount of repetition in the code. 
-        // For previous implementation see git log.
-        var st = [d.source, d.target];
-        for (var i = 0; i < 2; i++){
-            if (direction == "root") {
-                if (st[i].id === val.id) {
-                    switch_state(d, stat);
-                    if (st[(i+1)%2].lvl < val.lvl)
-                        mouse_action(st[(i+1)%2], stat, "left");
-                    else if (st[(i+1)%2].lvl > val.lvl)
-                        mouse_action(st[(i+1)%2], stat, "right");
-                }
-            }else if (direction == "left") {
-                if (st[i].id === val.id && st[(i+1)%2].lvl < val.lvl) {
-                    switch_state(d, stat);
-                    mouse_action(st[(i+1)%2], stat, direction);
-                }
-            }else if (direction == "right") {
-                if (st[i].id === val.id && st[(i+1)%2].lvl > val.lvl) {
-                    switch_state(d, stat);
-                    mouse_action(st[(i+1)%2], stat, direction);
-                }
-            }
+        var other = null;
+
+        if(d.source.id === me.id) other = d.target;
+        else if(d.target.id === me.id) other = d.source;
+        else return;
+           
+        if (direction == 0) {
+            switch_state(d, stat);
+            // if st[(i+1)%2].lvl - val.lvl < 0 then st[(i+1)%2] is to the left of val.lvl
+            // Otherwise it is to the right
+            prob_the_tree(other, stat, Math.sign(other.lvl - me.lvl));
+        }
+        // If dirction == -1 then other.lvl - val.lvl should be negative, meaning that we are continuing to the left
+        // Same is true for when the direction == 1 and we want to move right.
+        else if (direction*(other.lvl - me.lvl) > 0 ){ 
+            switch_state(d, stat);
+            prob_the_tree(other, stat, direction);
         }
     });
 }
@@ -129,23 +159,27 @@ function renderRelationshipGraph(data) {
         var bv = 0;
         for (var j = 0; j < d.lvl; j++)
             bv += boxWidth[j] + gap.width;
-        d.x = margin.left + bv;//d.lvl * (boxWidth + gap.width);
+        d.x = margin.left + bv;
         d.y = topMarginLvl[d.lvl] + (boxHeight + gap.height) * count[d.lvl];
-        d.id = "n" + i;
+        
+        //get the number of digits and pad the ids so that they are not repeated.
+        d.id = "n" + i.toString().pad("0", data.Nodes.length.toString().length); 
         count[d.lvl] += 1;
         Nodes.push(d);
     });
 
     data.links.forEach(function (d) {
         // If there is no node with the mentioned id, omit the link
-        if( find(d.source) && find(d.target)){
+        var s = find(d.source);
+        var t = find(d.target);
+        if(s && t){
             links.push({
-                source: find(d.source),
-                target: find(d.target),
-                id: "l" + find(d.source).id + find(d.target).id
+                source: s,
+                target: t,
+                id: "l" + s.id + t.id
             });
         }else{
-            console.warn("One of the IDs \'" +d.source+ "\' or \'" + d.target + "\' do not point to a node");
+            console.warn("One of the IDs \'" + d.source + "\' or \'" + d.target + "\' do not point to a node");
         }
     });
 
@@ -170,25 +204,26 @@ function renderRelationshipGraph(data) {
         .attr("ry", 6)
         .on("mouseover", function () {
             var d = d3.select(this).datum();
-            mouse_action(d, true, "root");
-            // D O N T   R E M O V E   T H I S
-            // It is refered to in a comment.
+            prob_the_tree(d, true, 0);
+            
             if(d.url || d.dsc) { 
                 nodeDescription = "Click to see a short description";
+                if(d.dsc.length < nodeDescription.length)
+                    nodeDescription = d.dsc;
                 tip.show(d)
             }
         })
         .on("mouseout", function () {
             var d = d3.select(this).datum();
-            mouse_action(d, false, "root");
+            prob_the_tree(d, false, 0);
             tip.hide();
         })
 //        .on("click", function(d) { if(d.url) window.open(d.url); }); // If a url is available, put a click event
         // Use this if you wish the tooltip to show when the box is clicked 
         // and open the url when the box is double clicked.
         // Otherwise comment them and uncomment the line above this comment and the line in "mouseover" event.
-        .on("click", function(d) { if(d.url || d.dsc) { nodeDescription = d.dsc; tip.show(d);} }) // If a url is available, put a click event
-        .on("dblclick", function(d) { if(d.url) window.open(d.url); }); // If a url is available, put a click event
+        .on("click", function(d) { if(d.url || d.dsc) { nodeDescription = d.dsc; tip.show(d);} }) // If a description is available, wire a click event
+        .on("dblclick", function(d) { if(d.url) window.open(d.url); }); // If a url is available, wire a double click event
 
     node.append("text")
         .attr("class", "label")
@@ -224,28 +259,6 @@ function renderRelationshipGraph(data) {
     });
 }
 
-// This function computes the size of the box needed to fit the node text.
-window.getWidthOfText = function(txt){
-  var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
-    for (var x = 0; x < classes.length; x++) {
-        if (classes[x].selectorText === ".label") {
-            // Create dummy span
-            this.e = document.createElement('span');
-            // Set font-size
-            this.e.className = "label";
-            // Set text
-            this.e.innerHTML = txt;
-            document.body.appendChild(this.e);
-            // Get width NOW, since the dummy span is about to be removed from the document
-            var w = this.e.offsetWidth + 20;
-            // Cleanup
-            document.body.removeChild(this.e);
-            // All right, we're done
-            return w;
-        }
-    }
-}
-
 // M A I N   C O D E
 
 d3.json("flare.json", function (json) {
@@ -275,13 +288,12 @@ d3.json("flare.json", function (json) {
     
     width += margin.left + margin.right + boxWidth[boxWidth.length-1];
     
-    // Which level is has the most elements. Used to compute the height of the page
+    // Which level has the most elements. Used to compute the height of the page
     var largest = Math.max.apply(Math, topMarginLvl);
     
     // Update height and width to have all the nodes in the image and also have 
     // the smallest image possible.
     height = margin.top + margin.bottom + largest*boxHeight + (largest - 1) * gap.height;
-//    width  = margin.left + margin.right + topMarginLvl.length*boxWidth + (topMarginLvl.length - 1)*gap.width;
     
     // Find the top margin of each column(Level).
     for (var i = 0; i < topMarginLvl.length; i++){
