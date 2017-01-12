@@ -35,6 +35,7 @@ var tip = d3.tip()
 //    .direction('e')
     .offset([-10, 0])
     .html(function(d) {
+        "use strict";
         var str = "";
         if (d.url){
             str = "<font color=\"red\">Double Click to open course page</font><br/><br/>";
@@ -43,7 +44,7 @@ var tip = d3.tip()
             str += nodeDescription;
             
         return str;
-    })
+    });
 
 // Find the node with the specified text as it name
 function find(nodeName) {
